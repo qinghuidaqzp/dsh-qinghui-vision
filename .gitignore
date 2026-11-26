@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tgz
+.env
+.env.*
+!.env.example
+.vision-kit.json
+.dsh-test/
+coverage/
+.DS_Store

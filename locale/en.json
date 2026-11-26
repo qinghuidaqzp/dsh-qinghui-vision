@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Vision Kit",
+    "description": "Read screenshots, extract text, and compare images with your chosen vision model or local Ollama."
+  }
+}

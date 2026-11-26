@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "看图助手 · Vision Kit",
+    "description": "截图解读、文字提取与多图对比。配置视觉模型后使用，可连接本地 Ollama。"
+  }
+}

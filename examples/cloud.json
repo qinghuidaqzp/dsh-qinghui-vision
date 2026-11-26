@@ -1,0 +1,12 @@
+{
+  "baseUrl": "https://api.siliconflow.cn/v1",
+  "model": "REPLACE_WITH_YOUR_VISION_MODEL_ID",
+  "apiKeyEnv": "DSH_VISION_API_KEY",
+  "timeoutMs": 30000,
+  "maxImages": 4,
+  "maxImageBytes": 10485760,
+  "maxOutputTokens": 2000,
+  "cacheTtlMs": 300000,
+  "cacheMaxEntries": 32,
+  "allowLocalServer": false
+}

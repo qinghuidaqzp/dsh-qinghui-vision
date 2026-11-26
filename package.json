@@ -1,0 +1,90 @@
+{
+  "name": "dsh-vision-kit",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 看图助手：截图理解、OCR 与多图对比，支持 OpenAI 兼容视觉服务和本地 Ollama。",
+  "type": "module",
+  "license": "MIT",
+  "author": "qinghuidaqzp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qinghuidaqzp/dsh-vision-kit.git"
+  },
+  "homepage": "https://github.com/qinghuidaqzp/dsh-vision-kit#readme",
+  "bugs": {
+    "url": "https://github.com/qinghuidaqzp/dsh-vision-kit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "dsh-vision": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "locale",
+    "cordis.patch.yml",
+    "examples",
+    "docs",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "vision",
+    "ocr",
+    "ollama"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "check": "npm run typecheck && npm test && npm run build",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "~3.19.0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.1.0",
+    "@deepseek-ai/dsh-credentials": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-fs": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-llm": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-working-directory": "0.2.2-rc.2"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "~4.1.0",
+    "@deepseek-ai/dsh-credentials": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-fs": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-llm": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-working-directory": "0.2.2-rc.2",
+    "@deepseek-ai/dsh-system-prompt": "0.2.2-rc.2",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
