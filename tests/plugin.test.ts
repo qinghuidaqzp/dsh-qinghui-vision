@@ -83,12 +83,12 @@ async function harness(t: TestContext, options: {
 
 test('real Cordis registry exposes valid native schemas, volatile settings, and cleans up on unload', async t => {
   const h = await harness(t);
-  assert.deepEqual(h.ctx.tools.schemas().map(x => x.name), ['vision_read_image', 'vision_compare_images']);
+  assert.deepEqual(h.ctx.tools.schemas().map(x => x.name), ['qinghui_vision_read_image', 'qinghui_vision_compare_images']);
   const effective = h.fiber.effectiveConfig as plugin.Config;
   assert.equal(effective.model.get(), 'test-vision');
   assert.equal(effective.apiKey.get(), undefined);
   assert.equal(effective.maxImageBytes.get(), 10485760);
-  const readTool = h.ctx.tools.get('vision_read_image')!;
+  const readTool = h.ctx.tools.get('qinghui_vision_read_image')!;
   assert.deepEqual(readTool.parameters.required, ['file_path']);
   assert.deepEqual(readTool.output.schema.required, ['text', 'model', 'cached', 'imageCount']);
   await h.fiber.dispose();
@@ -97,7 +97,7 @@ test('real Cordis registry exposes valid native schemas, volatile settings, and 
 
 test('native OCR tool passes working directory, opaque filesystem targets, limits and cancellation signal', async t => {
   const h = await harness(t, { secret: 'resolved-test-key' });
-  const result = await h.execute('vision_read_image', { file_path: 'screen.png', mode: 'ocr', prompt: '提取文字' });
+  const result = await h.execute('qinghui_vision_read_image', { file_path: 'screen.png', mode: 'ocr', prompt: '提取文字' });
   assert.deepEqual(result, { text: '图片中有一个按钮。', model: 'test-vision', cached: false, imageCount: 1 });
   assert.deepEqual(h.credentialRefs, ['DSH_VISION_API_KEY']);
   assert.deepEqual(h.fsCalls.map(x => x.operation), ['cwd', 'resolve', 'stat', 'read']);
@@ -110,15 +110,15 @@ test('native OCR tool passes working directory, opaque filesystem targets, limit
   assert.equal(h.requests[0].authorization, 'Bearer resolved-test-key');
   assert.match(h.requests[0].body.messages[0].content, /逐字提取/);
   assert.equal(h.requests[0].body.messages[1].content[0].text, '提取文字');
-  const output = h.ctx.tools.get('vision_read_image')!.output;
+  const output = h.ctx.tools.get('qinghui_vision_read_image')!.output;
   assert.deepEqual(output.render({}, result), [{ type: 'text', text: result.text }]);
 });
 
 test('comparison validates minimum count, reads images in order and gives one model request', async t => {
   const h = await harness(t);
-  await assert.rejects(h.execute('vision_compare_images', { file_paths: ['one.png'] }), { code: 'INVALID_ARGS' });
+  await assert.rejects(h.execute('qinghui_vision_compare_images', { file_paths: ['one.png'] }), { code: 'INVALID_ARGS' });
   assert.equal(h.fsCalls.length, 0);
-  const result = await h.execute('vision_compare_images', { file_paths: ['before.png', 'after.png'], prompt: '找出布局差异' });
+  const result = await h.execute('qinghui_vision_compare_images', { file_paths: ['before.png', 'after.png'], prompt: '找出布局差异' });
   assert.equal(result.imageCount, 2);
   assert.deepEqual(h.fsCalls.filter(x => x.operation === 'resolve').map(x => x.path), ['before.png', 'after.png']);
   const content = h.requests[0].body.messages[1].content;
@@ -130,15 +130,15 @@ test('comparison validates minimum count, reads images in order and gives one mo
 test('credentials resolve each call, account changes clear cache, live model config takes effect', async t => {
   const h = await harness(t, { secret: 'first-key' });
   const args = { file_path: 'image.png' };
-  assert.equal((await h.execute('vision_read_image', args)).cached, false);
-  assert.equal((await h.execute('vision_read_image', args)).cached, true);
+  assert.equal((await h.execute('qinghui_vision_read_image', args)).cached, false);
+  assert.equal((await h.execute('qinghui_vision_read_image', args)).cached, true);
   assert.equal(h.requests.length, 1);
   h.setSecret('second-key');
-  assert.equal((await h.execute('vision_read_image', args)).cached, false);
+  assert.equal((await h.execute('qinghui_vision_read_image', args)).cached, false);
   assert.equal(h.requests[1].authorization, 'Bearer second-key');
   await h.fiber.update({ ...h.config, model: 'different-vision' });
   assert.equal((h.fiber.effectiveConfig as plugin.Config).model.get(), 'different-vision');
-  assert.equal((await h.execute('vision_read_image', args)).model, 'different-vision');
+  assert.equal((await h.execute('qinghui_vision_read_image', args)).model, 'different-vision');
   assert.equal(h.requests[2].body.model, 'different-vision');
   assert.equal(h.credentialRefs.length, 4);
 });
@@ -149,7 +149,7 @@ test('missing host credential never falls back to process environment and fails 
   process.env[variable] = 'must-not-be-used';
   t.after(() => { if (old === undefined) delete process.env[variable]; else process.env[variable] = old; });
   const h = await harness(t, { config: { baseUrl: 'https://example.invalid/v1', apiKeyEnv: variable } });
-  await assert.rejects(h.execute('vision_read_image', { file_path: 'image.png' }), { code: 'API_KEY_REQUIRED' });
+  await assert.rejects(h.execute('qinghui_vision_read_image', { file_path: 'image.png' }), { code: 'API_KEY_REQUIRED' });
   assert.deepEqual(h.credentialRefs, [variable]);
   assert.equal(h.fsCalls.length, 0);
   assert.equal(h.requests.length, 0);
@@ -160,7 +160,7 @@ test('direct key takes precedence and provider errors retain actionable HarnessE
     secret: 'unused-host-secret', config: { apiKey: 'explicit-key' },
     handler: (_request, response) => { response.writeHead(401); response.end('explicit-key should never escape'); },
   });
-  await assert.rejects(h.execute('vision_read_image', { file_path: 'image.png' }), error => {
+  await assert.rejects(h.execute('qinghui_vision_read_image', { file_path: 'image.png' }), error => {
     assert.equal((error as { code: string }).code, 'AUTH_FAILED');
     assert.doesNotMatch(String(error), /explicit-key|unused-host-secret/);
     return true;
@@ -173,7 +173,7 @@ test('caller cancellation reaches HTTP request and preserves caller abort reason
   const h = await harness(t, { handler: () => {} });
   const controller = new AbortController();
   const started = once(h.server, 'captured');
-  const pending = h.execute('vision_read_image', { file_path: 'image.png' }, controller.signal);
+  const pending = h.execute('qinghui_vision_read_image', { file_path: 'image.png' }, controller.signal);
   const reason = new Error('cancel requested by test');
   const rejected = assert.rejects(pending, error => error === reason);
   await started;
@@ -185,7 +185,7 @@ test('caller cancellation reaches HTTP request and preserves caller abort reason
 test('plugin unload cancels in-flight inference and unregisters tools', async t => {
   const h = await harness(t, { handler: () => {} });
   const started = once(h.server, 'captured');
-  const pending = h.execute('vision_read_image', { file_path: 'image.png' });
+  const pending = h.execute('qinghui_vision_read_image', { file_path: 'image.png' });
   const rejected = assert.rejects(pending, { name: 'AbortError' });
   await started;
   await h.fiber.dispose();

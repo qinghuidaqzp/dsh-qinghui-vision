@@ -6,12 +6,12 @@ import { isIP } from 'node:net';
 import { loadImages, type ImageReader } from './images.js';
 import { normalizeConfig, VisionEngine, VisionError, type VisionConfig } from './vision.js';
 
-const HELP = `DeepSeek 看图助手 / dsh-vision
+const HELP = `DeepSeek 看图助手 / dsh-qinghui-vision
 
 用法：
-  dsh-vision doctor --config ./examples/ollama.json
-  dsh-vision analyze screenshot.png --config ./vision.json --prompt "解释这个报错"
-  dsh-vision analyze before.png after.png --mode compare --config ./vision.json
+  dsh-qinghui-vision doctor --config ./examples/ollama.json
+  dsh-qinghui-vision analyze screenshot.png --config ./vision.json --prompt "解释这个报错"
+  dsh-qinghui-vision analyze before.png after.png --mode compare --config ./vision.json
 
 选项：
   --config <file>    JSON 配置文件（与插件设置字段一致）
@@ -96,7 +96,7 @@ async function main(): Promise<void> {
     process.exitCode = issues.length ? 1 : 0;
     return;
   }
-  if (positionals[0] !== 'analyze') throw new Error('未知命令，请运行 dsh-vision --help。');
+  if (positionals[0] !== 'analyze') throw new Error('未知命令，请运行 dsh-qinghui-vision --help。');
   const mode = values.mode ?? 'describe';
   if (!['describe', 'ocr', 'compare'].includes(mode)) throw new Error('--mode 只能是 describe、ocr 或 compare。');
   const controller = new AbortController();

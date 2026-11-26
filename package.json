@@ -1,17 +1,17 @@
 {
-  "name": "dsh-vision-kit",
-  "version": "0.1.0",
-  "description": "DeepSeek Harness 看图助手：截图理解、OCR 与多图对比，支持 OpenAI 兼容视觉服务和本地 Ollama。",
+  "name": "dsh-qinghui-vision",
+  "version": "0.1.1",
+  "description": "Qinghui 看图助手：为 DeepSeek Harness 提供截图理解、OCR 和多图对比，支持云端视觉接口与本地 Ollama。",
   "type": "module",
   "license": "MIT",
   "author": "qinghuidaqzp",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qinghuidaqzp/dsh-vision-kit.git"
+    "url": "git+https://github.com/qinghuidaqzp/dsh-qinghui-vision.git"
   },
-  "homepage": "https://github.com/qinghuidaqzp/dsh-vision-kit#readme",
+  "homepage": "https://github.com/qinghuidaqzp/dsh-qinghui-vision#readme",
   "bugs": {
-    "url": "https://github.com/qinghuidaqzp/dsh-vision-kit/issues"
+    "url": "https://github.com/qinghuidaqzp/dsh-qinghui-vision/issues"
   },
   "publishConfig": {
     "access": "public",
@@ -32,7 +32,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "dsh-vision": "dist/cli.js"
+    "dsh-qinghui-vision": "dist/cli.js"
   },
   "files": [
     "dist",

@@ -22,8 +22,8 @@
 在项目专用 `.dsh-test` 目录设置独立 `DSH_HOME`，执行了以下验证：
 
 1. 初始化 Web profile。
-2. 通过 `dsh plugin --profile web add <本地 tgz>` 成功安装；profile bundle 列表出现 `dsh-vision-kit`。
-3. `dsh --profile web --dump-config` 输出包含 `vision-kit` 插件节点。
+2. 通过 `dsh plugin --profile web add <本地 tgz>` 成功安装；profile bundle 列表出现 `dsh-qinghui-vision`。
+3. `dsh --profile web --dump-config` 输出包含 `qinghui-vision` 插件节点。
 4. 启动 `dsh web --host 127.0.0.1 --port 0 --no-open`，使用该测试实例生成的认证信息读取页面，收到 HTTP 200 和完整 HTML。
 5. 关闭测试服务。用户的正常 `desktop` / `web` profile 未被修改。
 
@@ -33,4 +33,4 @@ pnpm 在独立 profile 安装时提示 peer dependency 警告；运行时由 Har
 
 - 用户未提供云端视觉凭据，本机也未安装可调用的 Ollama，因此尚未执行真实模型识图，不能据此评价 OCR 准确率。
 - 未验证 Harness 的其他版本。
-- 本文记录代码验证，不代表 npm 或第三方社区收录状态；发行包以 [GitHub Releases](https://github.com/qinghuidaqzp/dsh-vision-kit/releases) 为准。
+- 本文记录代码验证，不代表 npm 或第三方社区收录状态；发行包以 [GitHub Releases](https://github.com/qinghuidaqzp/dsh-qinghui-vision/releases) 为准。

@@ -1,8 +1,8 @@
-# DeepSeek 看图助手 · Vision Kit
+# Qinghui 看图助手 · Qinghui Vision
 
 为 DeepSeek Harness 提供 **截图解读、文字提取、多图对比**。主模型通过两个原生工具调用你指定的视觉模型，再继续分析或编写代码。
 
-首版参考 DSH 社区的热门视觉增强方向，独立实现，未复制 ModLens 的代码。选题数据和边界见 [社区调研](docs/market-research.md)。源码与安装包见 [GitHub Releases](https://github.com/qinghuidaqzp/dsh-vision-kit/releases)。
+首版参考 DSH 社区的热门视觉增强方向，独立实现，未复制 ModLens 的代码。选题数据和边界见 [社区调研](docs/market-research.md)。源码与安装包见 [GitHub Releases](https://github.com/qinghuidaqzp/dsh-qinghui-vision/releases)。
 
 ## 已实现
 
@@ -14,7 +14,7 @@
 | 原生设置 | 在 Harness 插件配置中填写视觉服务、模型和凭据引用 |
 | 本地模型 | 支持本机 Ollama 的兼容接口，无需云端 API Key |
 | 结果缓存 | 相同图片内容、问题、模式、模型和凭据的重复请求复用内存结果 |
-| 命令行诊断 | `dsh-vision doctor` 检查配置；`analyze` 可独立运行 |
+| 命令行诊断 | `dsh-qinghui-vision doctor` 检查配置；`analyze` 可独立运行 |
 
 支持 PNG、JPEG、WebP；默认单张最多 10 MiB，每次最多 4 张。图片来自已保存的本地文件；首版不包含自动截屏或接管粘贴图片的输入框。识别准确率、表格还原和多图能力取决于配置的视觉模型。
 
@@ -25,18 +25,29 @@
 桌面版首次打开后会初始化 `desktop` profile；**完全退出 DeepSeek Harness 桌面版**，再安装预构建的发行包：
 
 ```sh
-dsh plugin --profile desktop add "https://github.com/qinghuidaqzp/dsh-vision-kit/releases/download/v0.1.0/dsh-vision-kit-0.1.0.tgz"
+dsh plugin --profile desktop add "https://github.com/qinghuidaqzp/dsh-qinghui-vision/releases/download/v0.1.1/dsh-qinghui-vision-0.1.1.tgz"
 ```
 
 如果使用 `dsh web` 启动的 Web 版，则使用独立的 `web` profile：
 
 ```sh
-dsh plugin --profile web add "https://github.com/qinghuidaqzp/dsh-vision-kit/releases/download/v0.1.0/dsh-vision-kit-0.1.0.tgz"
+dsh plugin --profile web add "https://github.com/qinghuidaqzp/dsh-qinghui-vision/releases/download/v0.1.1/dsh-qinghui-vision-0.1.1.tgz"
 ```
 
-也可以从 [v0.1.0 Release](https://github.com/qinghuidaqzp/dsh-vision-kit/releases/tag/v0.1.0) 下载 `.tgz`，将命令中的网址替换为下载文件的绝对路径。重启对应 Harness 实例，在插件设置中找到 `vision-kit` / 看图助手并配置。其他自定义 profile 使用对应名称；桌面版与 Web 版的插件配置彼此独立。本版本通过 GitHub Release 发行，未发布到 npm；安装无需 npm 账号。
+也可以从 [v0.1.1 Release](https://github.com/qinghuidaqzp/dsh-qinghui-vision/releases/tag/v0.1.1) 下载 `.tgz`，将命令中的网址替换为下载文件的绝对路径。重启对应 Harness 实例，在插件设置中找到 `qinghui-vision` / 看图助手并配置。其他自定义 profile 使用对应名称；桌面版与 Web 版的插件配置彼此独立。本版本通过 GitHub Release 发行，未发布到 npm；安装无需 npm 账号。
 
 插件包自带 `dsh.bundle` 和 `cordis.patch.yml`，安装时由 Harness 插件管理器挂载，无需手写工具注册配置。
+
+### 从旧版升级
+
+本项目原名 `dsh-vision-kit`。从 0.1.1 起使用唯一包名 `dsh-qinghui-vision`，GitHub 仓库同步更名，历史 Release 保留。请先记下旧插件的模型地址、模型 ID 和凭据引用，再完全退出桌面版后执行：
+
+```sh
+dsh plugin --profile desktop remove dsh-vision-kit
+dsh plugin --profile desktop add "https://github.com/qinghuidaqzp/dsh-qinghui-vision/releases/download/v0.1.1/dsh-qinghui-vision-0.1.1.tgz"
+```
+
+重启后恢复配置。原生工具名改为 `qinghui_vision_read_image` 和 `qinghui_vision_compare_images`，独立 CLI 改为 `dsh-qinghui-vision`；`DSH_VISION_API_KEY` 等配置字段保持兼容。不要同时启用新旧两个版本。
 
 ## 配置视觉模型
 
@@ -74,20 +85,20 @@ Harness 内通过 `ctx.credentials` 解析凭据；独立 CLI 通过同名环境
 
 先把图片保存到当前工作区，再告诉 Harness：
 
-> 用 vision_read_image 看一下 `screenshots/error.png`，解释报错并给出排查步骤。
+> 用 qinghui_vision_read_image 看一下 `screenshots/error.png`，解释报错并给出排查步骤。
 
 > 用 OCR 模式提取 `invoice.png` 上的所有文字，保留表格。
 
-> 用 vision_compare_images 比较 `before.png` 和 `after.png`，列出布局和文字差异。
+> 用 qinghui_vision_compare_images 比较 `before.png` 和 `after.png`，列出布局和文字差异。
 
 工具接口：
 
 ```json
-{"name":"vision_read_image","arguments":{"file_path":"screenshot.png","mode":"describe","prompt":"这个页面有哪些可见问题？"}}
+{"name":"qinghui_vision_read_image","arguments":{"file_path":"screenshot.png","mode":"describe","prompt":"这个页面有哪些可见问题？"}}
 ```
 
 ```json
-{"name":"vision_compare_images","arguments":{"file_paths":["before.png","after.png"],"prompt":"重点检查按钮位置和文字变化"}}
+{"name":"qinghui_vision_compare_images","arguments":{"file_paths":["before.png","after.png"],"prompt":"重点检查按钮位置和文字变化"}}
 ```
 
 返回 `text`、`model`、`cached`、`imageCount`。Harness 工具卡展示文件位置；结果文本交给主模型继续处理。

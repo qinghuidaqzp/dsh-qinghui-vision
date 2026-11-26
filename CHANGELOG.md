@@ -1,5 +1,11 @@
 # 更新记录
 
+## 0.1.1 — 2026-11-26
+
+- 为避免与社区已有项目重名，更名为 `dsh-qinghui-vision`，仓库更名并保留旧链接重定向。
+- 原生工具改为 `qinghui_vision_read_image` / `qinghui_vision_compare_images`；CLI 改为 `dsh-qinghui-vision`。
+- 保留现有视觉配置字段与凭据引用；升级时先移除旧包，再安装新包并恢复配置。
+
 ## 0.1.0 — 2026-11-26
 
 首次发布 DeepSeek Harness 看图助手。
